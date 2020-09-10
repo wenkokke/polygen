@@ -3,6 +3,7 @@ Setup.hs
 dist-newstyle
 stack.yaml.lock
 .stack-work/
+src/
 *~
 
 ## Main TeX is generated from Main LHS:

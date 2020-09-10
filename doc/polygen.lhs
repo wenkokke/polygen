@@ -1,23 +1,3 @@
-%format pattern       = "\mathbf{pattern}"
-%format extKindEnv    = "\Varid{ext}_{\Varid{KindEnv}}"
-%format checkTy       = "\Varid{check}_{\Varid{Ty}}"
-%format extTySub      = "\Varid{ext}_{\Varid{TySub}}"
-%format appTySub      = "\Varid{app}_{\Varid{TySub}}"
-%format stepTy        = "\Varid{step}_{\Varid{Ty}}"
-%format normTy        = "\Varid{norm}_{\Varid{Ty}}"
-%format extTyEnv      = "\Varid{ext}_{\Varid{TyEnv}}"
-%format raiseTyEnv    = "\Varid{raise}_{\Varid{TyEnv}}"
-%format checkTm       = "\Varid{check}_{\Varid{Tm}}"
-%format checkClosedTm = "\Varid{check}_{\Varid{ClosedTm}}"
-%format :=>           = ":\Rightarrow"
-%format :->           = ":\rightarrow"
-%format <$>           = "\mathbin{{<}{\$}{>}}"
-%format <*>           = "\mathbin{{<}{*}{>}}"
-%format <|>           = "\mathbin{{<}{\vert}{>}}"
-%format false         = "\Varid{False}"
-%format true          = "\Varid{True}"
-%format &&&           = "\land"
-
 \begin{comment}
 \begin{code}
 {-# LANGUAGE ApplicativeDo        #-}
