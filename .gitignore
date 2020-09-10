@@ -7,7 +7,7 @@ src/
 *~
 
 ## Main TeX is generated from Main LHS:
-doc/main.tex
+doc/paper.tex
 
 ## No PDF files in repository:
 *.pdf

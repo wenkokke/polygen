@@ -1,20 +1,15 @@
-default: doc/main.pdf
-
-.PHONY: build
-build: src/polygen.hs
-	stack build
+default: paper
 
 .PHONY: paper
-paper: doc/main.pdf
+paper: doc/paper.pdf
 
-doc/main.pdf: doc/main.tex
-	cd doc && latexmk -pdf main.tex
+doc/paper.pdf: doc/paper.tex
+	cd doc && latexmk -pdf paper.tex
 
-doc/main.tex: doc/*.lhs
-	cd doc && lhs2TeX main.lhs -o main.tex
+doc/paper.tex: doc/main.tex doc/PolyGen.lhs
+	cd doc && lhs2TeX main.tex -o paper.tex
 
-src/:
-	mkdir src/
-
-src/polygen.hs: src/ | doc/polygen.lhs
-	cd doc && lhs2TeX --newcode main.lhs -o ../src/polygen.hs
+.PHONY: clean
+clean:
+	cd doc && latexmk -f -C paper
+	rm doc/paper.tex

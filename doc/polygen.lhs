@@ -14,6 +14,11 @@
 \end{code}
 \end{comment}
 
+\begin{comment}
+\begin{code}
+module PolyGen where
+\end{code}
+\end{comment}
 
 \begin{comment}
 \begin{code}
@@ -24,7 +29,6 @@ import Data.Bifunctor
 import Data.Bifunctor.TH
 import Data.Coolean
 import Data.Maybe
-import System.Environment
 \end{code}
 \end{comment}
 
@@ -342,14 +346,3 @@ checkClosedTm a x =
 polygen :: Int -> Type Z -> IO [Term Z Z]
 polygen depth a = search depth (checkClosedTm a)
 \end{code}
-
-\begin{comment}
-\begin{code}
-main :: IO ()
-main = do
-  args <- getArgs
-  case (length args, read (args !! 0), read (args !! 1)) of
-    (2, d, a) -> mapM_ print =<< polygen d a
-    (_, _, _) -> putStrLn "usage: polygen [depth] [type]"
-\end{code}
-\end{comment}
