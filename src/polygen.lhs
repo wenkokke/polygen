@@ -216,7 +216,7 @@ extKindEnv k kindOf (FS i) = kindOf i
 
 \begin{code}
 checkTy :: Kind -> Type ty -> Reader (KindEnv ty) Cool
-checkTy Star TyVoid = pure true
+checkTy Star TyVoid = return true
 checkTy Star (a :-> b) = do
   aOk <- checkTy Star a
   bOk <- checkTy Star b
@@ -233,7 +233,7 @@ checkTy k' (TyApp a b k) = do
   aOk <- checkTy (k :=> k') a
   bOk <- checkTy k' b
   return (aOk &&& bOk)
-checkTy _ _ = pure false
+checkTy _ _ = return false
 \end{code}
 
 
@@ -346,7 +346,7 @@ checkTm c (APP x (Normal a) (Normal b) k) = do
   xOk <- checkTm (TyForall k a) x
   yOk <- withReader fst (checkTy k b)
   return (xOk &&& yOk &&& c == normTy (TyRed a b k))
-checkTm _ _ = pure false
+checkTm _ _ = return false
 \end{code}
 
 \begin{code}
