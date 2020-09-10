@@ -80,12 +80,8 @@ Text of abstract \ldots.
 
 %include src/polygen.lhs
 
-%% Acknowledgments
-\begin{acks}
-\end{acks}
-
 %% Bibliography
-\bibliography{bibfile}
+\bibliography{main}
 
 %% Appendix
 \appendix
