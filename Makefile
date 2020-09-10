@@ -1,5 +1,12 @@
 default: doc/main.pdf
 
+.PHONY: test
+test:
+	stack build
+
+.PHONY: paper
+paper: doc/main.pdf
+
 doc/main.pdf: doc/main.tex
 	cd doc && latexmk -pdf main.tex
 

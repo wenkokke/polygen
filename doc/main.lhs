@@ -78,7 +78,7 @@ Text of abstract \ldots.
 
 \section{PolyGen}
 
-%include ../src/polygen.lhs
+%include src/polygen.lhs
 
 %% Acknowledgments
 \begin{acks}
