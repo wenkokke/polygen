@@ -1,0 +1,29 @@
+name:           polygen
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/polygen#readme>
+homepage:       https://github.com/wenkokke/polygen#readme
+bug-reports:    https://github.com/wenkokke/polygen/issues
+author:         Wen Kokke
+maintainer:     wen.kokke@ed.ac.uk
+copyright:      2020 Wen Kokke
+license:        Apache-2.0
+cabal-version:  >= 1.12
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/wenkokke/polygen
+
+executable polygen
+  main-is: polygen.lhs
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5,
+      bifunctors -any,
+      lazy-search -any,
+      mtl -any,
+      size-based -any
+  default-language: Haskell2010

@@ -1,0 +1,817 @@
+%% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
+\documentclass[sigplan,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+
+%% Conference information
+\acmConference[PLDI'21]{ACM SIGPLAN Conference on Programming Language Design and Implementation}{June 20--25, 2021}{Virtual Conference}
+\acmYear{2018}
+\acmISBN{}
+\acmDOI{}
+\startPage{1}
+
+%% Copyright information
+\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+\citestyle{acmauthoryear}  %% For author/year citations
+
+%% Preamble.
+\usepackage{comment}
+\usepackage{textgreek}
+\let\Bbbk\undefined
+%% ODER: format ==         = "\mathrel{==}"
+%% ODER: format /=         = "\neq "
+%
+%
+\makeatletter
+\@ifundefined{lhs2tex.lhs2tex.sty.read}%
+  {\@namedef{lhs2tex.lhs2tex.sty.read}{}%
+   \newcommand\SkipToFmtEnd{}%
+   \newcommand\EndFmtInput{}%
+   \long\def\SkipToFmtEnd#1\EndFmtInput{}%
+  }\SkipToFmtEnd
+
+\newcommand\ReadOnlyOnce[1]{\@ifundefined{#1}{\@namedef{#1}{}}\SkipToFmtEnd}
+\usepackage{amstext}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\DeclareFontFamily{OT1}{cmtex}{}
+\DeclareFontShape{OT1}{cmtex}{m}{n}
+  {<5><6><7><8>cmtex8
+   <9>cmtex9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmtex10}{}
+\DeclareFontShape{OT1}{cmtex}{m}{it}
+  {<-> ssub * cmtt/m/it}{}
+\newcommand{\texfamily}{\fontfamily{cmtex}\selectfont}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}
+  {<5><6><7><8>cmtt8
+   <9>cmbtt9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmbtt10}{}
+\DeclareFontShape{OT1}{cmtex}{bx}{n}
+  {<-> ssub * cmtt/bx/n}{}
+\newcommand{\tex}[1]{\text{\texfamily#1}}	% NEU
+
+\newcommand{\Sp}{\hskip.33334em\relax}
+
+
+\newcommand{\Conid}[1]{\mathit{#1}}
+\newcommand{\Varid}[1]{\mathit{#1}}
+\newcommand{\anonymous}{\kern0.06em \vbox{\hrule\@width.5em}}
+\newcommand{\plus}{\mathbin{+\!\!\!+}}
+\newcommand{\bind}{\mathbin{>\!\!\!>\mkern-6.7mu=}}
+\newcommand{\rbind}{\mathbin{=\mkern-6.7mu<\!\!\!<}}% suggested by Neil Mitchell
+\newcommand{\sequ}{\mathbin{>\!\!\!>}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\usepackage{polytable}
+
+%mathindent has to be defined
+\@ifundefined{mathindent}%
+  {\newdimen\mathindent\mathindent\leftmargini}%
+  {}%
+
+\def\resethooks{%
+  \global\let\SaveRestoreHook\empty
+  \global\let\ColumnHook\empty}
+\newcommand*{\savecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\savecolumns[#1]}}
+\newcommand*{\restorecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\restorecolumns[#1]}}
+\newcommand*{\aligncolumn}[2]%
+  {\g@addto@macro\ColumnHook{\column{#1}{#2}}}
+
+\resethooks
+
+\newcommand{\onelinecommentchars}{\quad-{}- }
+\newcommand{\commentbeginchars}{\enskip\{-}
+\newcommand{\commentendchars}{-\}\enskip}
+
+\newcommand{\visiblecomments}{%
+  \let\onelinecomment=\onelinecommentchars
+  \let\commentbegin=\commentbeginchars
+  \let\commentend=\commentendchars}
+
+\newcommand{\invisiblecomments}{%
+  \let\onelinecomment=\empty
+  \let\commentbegin=\empty
+  \let\commentend=\empty}
+
+\visiblecomments
+
+\newlength{\blanklineskip}
+\setlength{\blanklineskip}{0.66084ex}
+
+\newcommand{\hsindent}[1]{\quad}% default is fixed indentation
+\let\hspre\empty
+\let\hspost\empty
+\newcommand{\NB}{\textbf{NB}}
+\newcommand{\Todo}[1]{$\langle$\textbf{To do:}~#1$\rangle$}
+
+\EndFmtInput
+\makeatother
+%
+
+\begin{document}
+
+\title{PolyGen}
+
+\author{Wen Kokke}
+\affiliation{
+  \institution{University of Edinburgh}
+  \country{United Kingdom}
+}
+\email{wen.kokke@ed.ac.uk}
+
+%% TODO: Add yourself...
+
+
+%% Abstract
+\begin{abstract}
+Text of abstract \ldots.
+\end{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\begin{CCSXML}\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{ccs2012}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept\char95 id}\mathbin{>}\mathrm{10011007.10011006}\mathbin{\circ}\mathrm{10011008}\mathbin{</}\Varid{concept\char95 id}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept\char95 desc}\mathbin{>}\Conid{Software}\;\Varid{and}\;\Varid{its}\;\Varid{engineering}\mathord{\sim}\Conid{General}\;\Varid{programming}\;\Varid{languages}\mathbin{</}\Varid{concept\char95 desc}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept\char95 significance}\mathbin{>}\mathrm{500}\mathbin{</}\Varid{concept\char95 significance}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\mathbin{/}\Varid{concept}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept\char95 id}\mathbin{>}\mathrm{10003456.10003457}\mathbin{\circ}\mathrm{10003521.10003525}\mathbin{</}\Varid{concept\char95 id}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept\char95 desc}\mathbin{>}\Conid{Social}\;\Varid{and}\;\Varid{professional}\;\Varid{topics}\mathord{\sim}\Conid{History}\;\mathbf{of}\;\Varid{programming}\;\Varid{languages}\mathbin{</}\Varid{concept\char95 desc}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\Varid{concept\char95 significance}\mathbin{>}\mathrm{300}\mathbin{</}\Varid{concept\char95 significance}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\mathbin{/}\Varid{concept}\mathbin{>}{}\<[E]%
+\\
+\>[B]{}\mathbin{/}\Varid{ccs2012}\mathbin{>}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~General programming languages}
+\ccsdesc[300]{Social and professional topics~History of programming languages}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+\section{PolyGen}
+
+\begin{comment}
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE ApplicativeDo         \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE DeriveAnyClass        \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE DeriveDataTypeable    \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE DeriveFunctor         \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE EmptyCase             \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE EmptyDataDeriving     \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE FlexibleInstances     \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE FlexibleContexts      \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE LambdaCase            \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE TemplateHaskell       \#-\}\enskip}{}\<[E]%
+\\
+\>[B]{}\mbox{\enskip\{-\# LANGUAGE UndecidableInstances  \#-\}\enskip}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\end{comment}
+
+
+\begin{comment}
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{import}\;\Conid{\Conid{Control}.Enumerable}{}\<[E]%
+\\
+\>[B]{}\mathbf{import}\;\Conid{\Conid{Control}.Search}{}\<[E]%
+\\
+\>[B]{}\mathbf{import}\;\Conid{\Conid{Control}.\Conid{Monad}.Reader}{}\<[E]%
+\\
+\>[B]{}\mathbf{import}\;\Conid{\Conid{Data}.Bifunctor}{}\<[E]%
+\\
+\>[B]{}\mathbf{import}\;\Conid{\Conid{Data}.\Conid{Bifunctor}.TH}{}\<[E]%
+\\
+\>[B]{}\mathbf{import}\;\Conid{\Conid{Data}.Coolean}{}\<[E]%
+\\
+\>[B]{}\mathbf{import}\;\Conid{\Conid{Data}.Maybe}{}\<[E]%
+\\
+\>[B]{}\mathbf{import}\;\Conid{\Conid{System}.Environment}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+\end{comment}
+
+
+\subsection{Names}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Conid{Z}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{deriving}\;(\Conid{Typeable},\Conid{Eq},\Conid{Read},\Conid{Show}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Enumerable}\;\Conid{Z}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{enumerate}\mathrel{=}\Varid{datatype}\;[\mskip1.5mu \mskip1.5mu]{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{fromZ}\mathbin{::}\Conid{Z}\to \Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{fromZ}\;\Varid{z}\mathrel{=}\mathbf{case}\;\Varid{z}\;\mathbf{of}\;\{\mskip1.5mu \mskip1.5mu\}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Conid{S}\;\Varid{n}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathrel{=}\Conid{FZ}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{FS}\;\Varid{n}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{deriving}\;(\Conid{Typeable},\Conid{Eq},\Conid{Read},\Conid{Functor}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Enumerable}\;\Varid{n}\Rightarrow \Conid{Enumerable}\;(\Conid{S}\;\Varid{n})\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{enumerate}\mathrel{=}\Varid{share}\mathbin{\$}\Varid{aconcat}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}[\mskip1.5mu \Varid{c0}\;\Conid{FZ}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{},\Varid{c1}\;\Conid{FS}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{class}\;\Conid{Fin}\;\Varid{n}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{toInt}\mathbin{::}\Varid{n}\to \Conid{Int}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Fin}\;\Conid{Z}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{toInt}\mathrel{=}\Varid{fromZ}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Fin}\;\Varid{n}\Rightarrow \Conid{Fin}\;(\Conid{S}\;\Varid{n})\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{toInt}\;\Conid{FZ}{}\<[16]%
+\>[16]{}\mathrel{=}\mathrm{0}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{toInt}\;(\Conid{FS}\;\Varid{i})\mathrel{=}\Varid{succ}\;(\Varid{toInt}\;\Varid{i}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Fin}\;(\Conid{S}\;\Varid{n})\Rightarrow \Conid{Show}\;(\Conid{S}\;\Varid{n})\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{show}\mathrel{=}\Varid{show}\mathbin{\circ}\Varid{toInt}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsection{Kinds}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{infixr}\;\mathrm{9}\mathbin{:=>}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{data}\;\Conid{Kind}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathrel{=}\Conid{Star}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{Kind}\mathbin{:=>}\Conid{Kind}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{deriving}\;(\Conid{Typeable},\Conid{Eq},\Conid{Read},\Conid{Show}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{deriveEnumerable}\;\text{\ttfamily ''}\;\Conid{Kind}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsection{Types}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{infixr}\;\mathrm{9}\mathbin{:->}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{data}\;\Conid{Type}\;\Varid{tyname}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathrel{=}\Conid{TyVoid}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{Type}\;\Varid{tyname}\mathbin{:->}\Conid{Type}\;\Varid{tyname}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{TyForall}\;\Conid{Kind}\;(\Conid{Type}\;(\Conid{S}\;\Varid{tyname})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{TyVar}\;\Varid{tyname}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{TyLam}\;(\Conid{Type}\;(\Conid{S}\;\Varid{tyname})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{TyApp}\;(\Conid{Type}\;\Varid{tyname})\;(\Conid{Type}\;\Varid{tyname})\;\Conid{Kind}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{deriving}\;(\Conid{Typeable},\Conid{Eq},\Conid{Read},\Conid{Show},\Conid{Functor}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{deriveEnumerable}\;\text{\ttfamily ''}\;\Conid{Type}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{25}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{25E}{@{}l@{}}%
+\column{29}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{newtype}\;\Conid{Normal}\;\Varid{a}\mathrel{=}\Conid{Normal}\;\{\mskip1.5mu \Varid{unNormal}\mathbin{::}\Varid{a}\mskip1.5mu\}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{deriving}\;(\Conid{Typeable},\Conid{Eq},\Conid{Functor}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Show}\;\Varid{a}\Rightarrow \Conid{Show}\;(\Conid{Normal}\;\Varid{a})\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{showsPrec}\;\Varid{d}\;\Varid{a}\mathrel{=}\Varid{showsPrec}\;\Varid{d}\;(\Varid{unNormal}\;\Varid{a}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Enumerable}\;\Varid{tyname}\Rightarrow \Conid{Enumerable}\;(\Conid{Normal}\;(\Conid{Type}\;\Varid{tyname}))\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{enumerate}\mathrel{=}\Varid{share}\mathbin{\$}\Varid{aconcat}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}[\mskip1.5mu {}\<[14]%
+\>[14]{}\Varid{c1}{}\<[18]%
+\>[18]{}\mathbin{\$}\lambda \Varid{ty}{}\<[25]%
+\>[25]{}\to {}\<[25E]%
+\>[29]{}\Conid{Normal}\;(\Varid{unNeutral}\;\Varid{ty}){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{},\Varid{pay}\mathbin{\circ}{}\<[14]%
+\>[14]{}\Varid{c1}{}\<[18]%
+\>[18]{}\mathbin{\$}\lambda \Varid{ty}{}\<[25]%
+\>[25]{}\to {}\<[25E]%
+\>[29]{}\Conid{Normal}\;(\Conid{TyLam}\;(\Varid{unNormal}\;\Varid{ty})){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{32}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{32E}{@{}l@{}}%
+\column{36}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{newtype}\;\Conid{Neutral}\;\Varid{a}\mathrel{=}\Conid{Neutral}\;\{\mskip1.5mu \Varid{unNeutral}\mathbin{::}\Varid{a}\mskip1.5mu\}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{deriving}\;(\Conid{Typeable},\Conid{Eq},\Conid{Functor}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Show}\;\Varid{a}\Rightarrow \Conid{Show}\;(\Conid{Neutral}\;\Varid{a})\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{showsPrec}\;\Varid{d}\;\Varid{a}\mathrel{=}\Varid{showsPrec}\;\Varid{d}\;(\Varid{unNeutral}\;\Varid{a}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mathbf{instance}\;\Conid{Enumerable}\;\Varid{tyname}\Rightarrow \Conid{Enumerable}\;(\Conid{Neutral}\;(\Conid{Type}\;\Varid{tyname}))\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{enumerate}\mathrel{=}\Varid{share}\mathbin{\$}\Varid{aconcat}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}[\mskip1.5mu \Varid{pay}\mathbin{\circ}{}\<[14]%
+\>[14]{}\Varid{c0}{}\<[18]%
+\>[18]{}\mathbin{\$}{}\<[36]%
+\>[36]{}\Conid{Neutral}\;\Conid{TyVoid}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{},\Varid{pay}\mathbin{\circ}{}\<[14]%
+\>[14]{}\Varid{c2}{}\<[18]%
+\>[18]{}\mathbin{\$}\lambda \Varid{ty1}\;\Varid{ty2}{}\<[32]%
+\>[32]{}\to {}\<[32E]%
+\>[36]{}\Conid{Neutral}\;(\Varid{unNeutral}\;\Varid{ty1}\mathbin{:->}\Varid{unNeutral}\;\Varid{ty2}){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{},\Varid{pay}\mathbin{\circ}{}\<[14]%
+\>[14]{}\Varid{c2}{}\<[18]%
+\>[18]{}\mathbin{\$}\lambda \Varid{k}\;\Varid{ty}{}\<[32]%
+\>[32]{}\to {}\<[32E]%
+\>[36]{}\Conid{Neutral}\;(\Conid{TyForall}\;\Varid{k}\;(\Varid{unNeutral}\;\Varid{ty})){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{},\Varid{pay}\mathbin{\circ}{}\<[14]%
+\>[14]{}\Varid{c1}{}\<[18]%
+\>[18]{}\mathbin{\$}\lambda \Varid{i}{}\<[32]%
+\>[32]{}\to {}\<[32E]%
+\>[36]{}\Conid{Neutral}\;(\Conid{TyVar}\;\Varid{i}){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{},\Varid{pay}\mathbin{\circ}{}\<[14]%
+\>[14]{}\Varid{c3}{}\<[18]%
+\>[18]{}\mathbin{\$}\lambda \Varid{ty1}\;\Varid{ty2}\;\Varid{k}{}\<[32]%
+\>[32]{}\to {}\<[32E]%
+\>[36]{}\Conid{Neutral}\;(\Conid{TyApp}\;(\Varid{unNeutral}\;\Varid{ty1})\;(\Varid{unNormal}\;\Varid{ty2})\;\Varid{k}){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsection{Kind Checking}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{39}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{type}\;\Conid{KindEnv}\;\Varid{tyname}\mathrel{=}\Varid{tyname}\to \Conid{Kind}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{extKindEnv}\mathbin{::}\Conid{Kind}\to \Conid{KindEnv}\;\Varid{tyname}\to \Conid{KindEnv}\;(\Conid{S}\;\Varid{tyname}){}\<[E]%
+\\
+\>[B]{}\Varid{extKindEnv}\;\Varid{k}\;\Varid{kindOf}\;\Conid{FZ}{}\<[28]%
+\>[28]{}\mathrel{=}\Varid{k}{}\<[E]%
+\\
+\>[B]{}\Varid{extKindEnv}\;\Varid{k}\;\Varid{kindOf}\;(\Conid{FS}\;\Varid{i})\mathrel{=}\Varid{kindOf}\;\Varid{i}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{checkKind}\mathbin{::}\Conid{Kind}\to \Conid{Type}\;\Varid{tyname}\to \Conid{Reader}\;(\Conid{KindEnv}\;\Varid{tyname})\;\Conid{Cool}{}\<[E]%
+\\
+\>[B]{}\Varid{checkKind}\;\Conid{Star}\;{}\<[23]%
+\>[23]{}\Conid{TyVoid}{}\<[39]%
+\>[39]{}\mathrel{=}\Varid{pure}\;\Varid{true}{}\<[E]%
+\\
+\>[B]{}\Varid{checkKind}\;\Conid{Star}\;{}\<[23]%
+\>[23]{}(\Varid{a}\mathbin{:->}\Varid{b}){}\<[39]%
+\>[39]{}\mathrel{=}(\mathbin{\&\&\&})\mathbin{<\$>}\Varid{checkKind}\;\Conid{Star}\;\Varid{a}\mathbin{<*>}\Varid{checkKind}\;\Conid{Star}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\Varid{checkKind}\;\Conid{Star}\;{}\<[23]%
+\>[23]{}(\Conid{TyForall}\;\Varid{k}\;\Varid{a}){}\<[39]%
+\>[39]{}\mathrel{=}\Varid{withReader}\;(\Varid{extKindEnv}\;\Varid{k})\;(\Varid{checkKind}\;\Conid{Star}\;\Varid{a}){}\<[E]%
+\\
+\>[B]{}\Varid{checkKind}\;\Varid{k}\;{}\<[23]%
+\>[23]{}(\Conid{TyVar}\;\Varid{i}){}\<[39]%
+\>[39]{}\mathrel{=}\mathbf{do}\;\Varid{kindOf}\leftarrow \Varid{ask};\Varid{pure}\;(\Varid{toCool}\;(\Varid{k}\equiv \Varid{kindOf}\;\Varid{i})){}\<[E]%
+\\
+\>[B]{}\Varid{checkKind}\;(\Varid{k}\mathbin{:=>}\Varid{k'})\;{}\<[23]%
+\>[23]{}(\Conid{TyLam}\;\Varid{a}){}\<[39]%
+\>[39]{}\mathrel{=}\Varid{withReader}\;(\Varid{extKindEnv}\;\Varid{k})\;(\Varid{checkKind}\;\Varid{k'}\;\Varid{a}){}\<[E]%
+\\
+\>[B]{}\Varid{checkKind}\;\Varid{k'}\;{}\<[23]%
+\>[23]{}(\Conid{TyApp}\;\Varid{a}\;\Varid{b}\;\Varid{k}){}\<[39]%
+\>[39]{}\mathrel{=}(\mathbin{\&\&\&})\mathbin{<\$>}\Varid{checkKind}\;(\Varid{k}\mathbin{:=>}\Varid{k'})\;\Varid{a}\mathbin{<*>}\Varid{checkKind}\;\Varid{k'}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\Varid{checkKind}\;\anonymous \;{}\<[23]%
+\>[23]{}\anonymous {}\<[39]%
+\>[39]{}\mathrel{=}\Varid{pure}\;\Varid{false}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsection{Type Normalisation}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{20}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{31}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{31E}{@{}l@{}}%
+\column{36}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{type}\;\Conid{TySub}\;\Varid{tyname}\;\Varid{tyname'}\mathrel{=}\Varid{tyname}\to \Conid{Type}\;\Varid{tyname'}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{extTySub}\mathbin{::}\Conid{TySub}\;\Varid{tyname}\;\Varid{tyname'}\to \Conid{TySub}\;(\Conid{S}\;\Varid{tyname})\;(\Conid{S}\;\Varid{tyname'}){}\<[E]%
+\\
+\>[B]{}\Varid{extTySub}\;\Varid{s}\;\Conid{FZ}{}\<[20]%
+\>[20]{}\mathrel{=}\Conid{TyVar}\;\Conid{FZ}{}\<[E]%
+\\
+\>[B]{}\Varid{extTySub}\;\Varid{s}\;(\Conid{FS}\;\Varid{i}){}\<[20]%
+\>[20]{}\mathrel{=}\Conid{FS}\mathbin{<\$>}\Varid{s}\;\Varid{i}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{appTySub}\mathbin{::}\Conid{TySub}\;\Varid{tyname}\;\Varid{tyname'}\to \Conid{Type}\;\Varid{tyname}\to \Conid{Type}\;\Varid{tyname'}{}\<[E]%
+\\
+\>[B]{}\Varid{appTySub}\;\Varid{s}\;\Conid{TyVoid}{}\<[28]%
+\>[28]{}\mathrel{=}\Conid{TyVoid}{}\<[E]%
+\\
+\>[B]{}\Varid{appTySub}\;\Varid{s}\;(\Varid{a}\mathbin{:->}\Varid{b}){}\<[28]%
+\>[28]{}\mathrel{=}\Varid{appTySub}\;\Varid{s}\;\Varid{a}\mathbin{:->}\Varid{appTySub}\;\Varid{s}\;\Varid{b}{}\<[E]%
+\\
+\>[B]{}\Varid{appTySub}\;\Varid{s}\;(\Conid{TyForall}\;\Varid{k}\;\Varid{a}){}\<[28]%
+\>[28]{}\mathrel{=}\Conid{TyForall}\;\Varid{k}\;(\Varid{appTySub}\;(\Varid{extTySub}\;\Varid{s})\;\Varid{a}){}\<[E]%
+\\
+\>[B]{}\Varid{appTySub}\;\Varid{s}\;(\Conid{TyVar}\;\Varid{i}){}\<[28]%
+\>[28]{}\mathrel{=}\Varid{s}\;\Varid{i}{}\<[E]%
+\\
+\>[B]{}\Varid{appTySub}\;\Varid{s}\;(\Conid{TyLam}\;\Varid{a}){}\<[28]%
+\>[28]{}\mathrel{=}\Conid{TyLam}\;(\Varid{appTySub}\;(\Varid{extTySub}\;\Varid{s})\;\Varid{a}){}\<[E]%
+\\
+\>[B]{}\Varid{appTySub}\;\Varid{s}\;(\Conid{TyApp}\;\Varid{a}\;\Varid{b}\;\Varid{k}){}\<[28]%
+\>[28]{}\mathrel{=}\Conid{TyApp}\;(\Varid{appTySub}\;\Varid{s}\;\Varid{a})\;(\Varid{appTySub}\;\Varid{s}\;\Varid{b})\;\Varid{k}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{stepTy}\mathbin{::}\Conid{Type}\;\Varid{tyname}\to \Conid{Maybe}\;(\Conid{Type}\;\Varid{tyname}){}\<[E]%
+\\
+\>[B]{}\Varid{stepTy}\;\Conid{TyVoid}{}\<[31]%
+\>[31]{}\mathrel{=}{}\<[31E]%
+\>[36]{}\Varid{empty}{}\<[E]%
+\\
+\>[B]{}\Varid{stepTy}\;(\Varid{a}\mathbin{:->}\Varid{b}){}\<[31]%
+\>[31]{}\mathrel{=}{}\<[31E]%
+\>[36]{}((\mathbin{:->})\mathbin{<\$>}\Varid{stepTy}\;\Varid{a}\mathbin{<*>}\Varid{pure}\;\Varid{b}){}\<[E]%
+\\
+\>[31]{}\mathbin{<|>}{}\<[31E]%
+\>[36]{}((\mathbin{:->})\mathbin{<\$>}\Varid{pure}\;\Varid{a}\mathbin{<*>}\Varid{stepTy}\;\Varid{b}){}\<[E]%
+\\
+\>[B]{}\Varid{stepTy}\;(\Conid{TyForall}\;\Varid{k}\;\Varid{a}){}\<[31]%
+\>[31]{}\mathrel{=}{}\<[31E]%
+\>[36]{}\Conid{TyForall}\mathbin{<\$>}\Varid{pure}\;\Varid{k}\mathbin{<*>}\Varid{stepTy}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{stepTy}\;(\Conid{TyLam}\;\Varid{a}){}\<[31]%
+\>[31]{}\mathrel{=}{}\<[31E]%
+\>[36]{}\Conid{TyLam}\mathbin{<\$>}\Varid{stepTy}\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{stepTy}\;(\Conid{TyVar}\;\Varid{i}){}\<[31]%
+\>[31]{}\mathrel{=}{}\<[31E]%
+\>[36]{}\Varid{empty}{}\<[E]%
+\\
+\>[B]{}\Varid{stepTy}\;(\Conid{TyApp}\;(\Conid{TyLam}\;\Varid{a})\;\Varid{b}\;\Varid{k}){}\<[31]%
+\>[31]{}\mathrel{=}{}\<[31E]%
+\>[36]{}\Varid{pure}\;(\Varid{appTySub}\;(\lambda \mathbf{case}\;\Conid{FZ}\to \Varid{b};\Conid{FS}\;\Varid{i}\to \Conid{TyVar}\;\Varid{i})\;\Varid{a}){}\<[E]%
+\\
+\>[B]{}\Varid{stepTy}\;(\Conid{TyApp}\;\Varid{a}\;\Varid{b}\;\Varid{k}){}\<[31]%
+\>[31]{}\mathrel{=}{}\<[31E]%
+\>[36]{}(\Conid{TyApp}\mathbin{<\$>}\Varid{stepTy}\;\Varid{a}\mathbin{<*>}\Varid{pure}\;\Varid{b}\mathbin{<*>}\Varid{pure}\;\Varid{k}){}\<[E]%
+\\
+\>[31]{}\mathbin{<|>}{}\<[31E]%
+\>[36]{}(\Conid{TyApp}\mathbin{<\$>}\Varid{pure}\;\Varid{a}\mathbin{<*>}\Varid{stepTy}\;\Varid{b}\mathbin{<*>}\Varid{pure}\;\Varid{k}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{normaliseTy}\mathbin{::}\Conid{Type}\;\Varid{tyname}\to \Conid{Type}\;\Varid{tyname}{}\<[E]%
+\\
+\>[B]{}\Varid{normaliseTy}\;\Varid{a}\mathrel{=}\Varid{maybe}\;\Varid{a}\;\Varid{normaliseTy}\;(\Varid{stepTy}\;\Varid{a}){}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsection{Terms}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{data}\;\Conid{Term}\;\Varid{tyname}\;\Varid{name}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathrel{=}\Conid{Var}\;\Varid{name}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{Lam}\;(\Conid{Term}\;\Varid{tyname}\;(\Conid{S}\;\Varid{name})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{App}\;(\Conid{Term}\;\Varid{tyname}\;\Varid{name})\;(\Conid{Term}\;\Varid{tyname}\;\Varid{name})\;(\Conid{Normal}\;(\Conid{Type}\;\Varid{tyname})){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{LAM}\;(\Conid{Term}\;(\Conid{S}\;\Varid{tyname})\;\Varid{name}){}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mid \Conid{APP}\;(\Conid{Term}\;\Varid{tyname}\;\Varid{name})\;(\Conid{Normal}\;(\Conid{Type}\;(\Conid{S}\;\Varid{tyname})))\;(\Conid{Normal}\;(\Conid{Type}\;\Varid{tyname}))\;\Conid{Kind}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{deriving}\;(\Conid{Typeable},\Conid{Eq},\Conid{Show}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{deriveBifunctor}\;{}\<[19]%
+\>[19]{}\text{\ttfamily ''}\;\Conid{Term}{}\<[E]%
+\\
+\>[B]{}\Varid{deriveEnumerable}\;{}\<[19]%
+\>[19]{}\text{\ttfamily ''}\;\Conid{Term}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsection{Type Checking}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{20}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{60}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{60E}{@{}l@{}}%
+\column{65}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\mathbf{type}\;\Conid{TyEnv}\;\Varid{tyname}\;\Varid{name}\mathrel{=}\Varid{name}\to \Conid{Type}\;\Varid{tyname}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{extTyEnv}\mathbin{::}\Conid{Type}\;\Varid{tyname}\to \Conid{TyEnv}\;\Varid{tyname}\;\Varid{name}\to \Conid{TyEnv}\;\Varid{tyname}\;(\Conid{S}\;\Varid{name}){}\<[E]%
+\\
+\>[B]{}\Varid{extTyEnv}\;\Varid{a}\;\Varid{typeOf}\;{}\<[20]%
+\>[20]{}\Conid{FZ}{}\<[28]%
+\>[28]{}\mathrel{=}\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{extTyEnv}\;\Varid{a}\;\Varid{typeOf}\;{}\<[20]%
+\>[20]{}(\Conid{FS}\;\Varid{n}){}\<[28]%
+\>[28]{}\mathrel{=}\Varid{typeOf}\;\Varid{n}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{raiseTyEnv}\mathbin{::}\Conid{TyEnv}\;\Varid{tyname}\;\Varid{name}\to \Conid{TyEnv}\;(\Conid{S}\;\Varid{tyname})\;\Varid{name}{}\<[E]%
+\\
+\>[B]{}\Varid{raiseTyEnv}\;\Varid{typeOf}\;\Varid{n}\mathrel{=}\Conid{FS}\mathbin{<\$>}\Varid{typeOf}\;\Varid{n}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{checkType}\mathbin{::}\Conid{Eq}\;\Varid{tyname}\Rightarrow \Conid{Type}\;\Varid{tyname}\to \Conid{Term}\;\Varid{tyname}\;\Varid{name}\to \Conid{Reader}\;(\Conid{KindEnv}\;\Varid{tyname},\Conid{TyEnv}\;\Varid{tyname}\;\Varid{name})\;\Conid{Cool}{}\<[E]%
+\\
+\>[B]{}\Varid{checkType}\;\Varid{a}\;{}\<[27]%
+\>[27]{}(\Conid{Var}\;\Varid{n}){}\<[60]%
+\>[60]{}\mathrel{=}{}\<[60E]%
+\>[65]{}\mathbf{do}\;(\Varid{kindOf},\Varid{typeOf})\leftarrow \Varid{ask};\Varid{pure}\;(\Varid{toCool}\;(\Varid{a}\equiv \Varid{typeOf}\;\Varid{n})){}\<[E]%
+\\
+\>[B]{}\Varid{checkType}\;(\Varid{a}\mathbin{:->}\Varid{b})\;{}\<[27]%
+\>[27]{}(\Conid{Lam}\;\Varid{x}){}\<[60]%
+\>[60]{}\mathrel{=}{}\<[60E]%
+\>[65]{}\Varid{withReader}\;(\Varid{bimap}\;\Varid{id}\;(\Varid{extTyEnv}\;\Varid{a}))\;(\Varid{checkType}\;\Varid{b}\;\Varid{x}){}\<[E]%
+\\
+\>[B]{}\Varid{checkType}\;\Varid{b}\;{}\<[27]%
+\>[27]{}(\Conid{App}\;\Varid{x}\;\Varid{y}\;(\Conid{Normal}\;\Varid{a})){}\<[60]%
+\>[60]{}\mathrel{=}{}\<[60E]%
+\>[65]{}(\mathbin{\&\&\&})\mathbin{<\$>}\Varid{checkType}\;(\Varid{a}\mathbin{:->}\Varid{b})\;\Varid{x}\mathbin{<*>}\Varid{checkType}\;\Varid{a}\;\Varid{y}{}\<[E]%
+\\
+\>[B]{}\Varid{checkType}\;(\Conid{TyForall}\;\Varid{k}\;\Varid{a})\;{}\<[27]%
+\>[27]{}(\Conid{LAM}\;\Varid{x}){}\<[60]%
+\>[60]{}\mathrel{=}{}\<[60E]%
+\>[65]{}\Varid{withReader}\;(\Varid{bimap}\;(\Varid{extKindEnv}\;\Varid{k})\;\Varid{raiseTyEnv})\;(\Varid{checkType}\;\Varid{a}\;\Varid{x}){}\<[E]%
+\\
+\>[B]{}\Varid{checkType}\;\Varid{c}\;{}\<[27]%
+\>[27]{}(\Conid{APP}\;\Varid{x}\;(\Conid{Normal}\;\Varid{a})\;(\Conid{Normal}\;\Varid{b})\;\Varid{k}){}\<[60]%
+\>[60]{}\mathrel{=}{}\<[60E]%
+\>[65]{}(\lambda \Varid{b1}\;\Varid{b2}\;\Varid{b3}\to \Varid{b1}\mathbin{\&\&\&}\Varid{b2}\mathbin{\&\&\&}\Varid{b3}){}\<[E]%
+\\
+\>[60]{}\mathbin{<\$>}{}\<[60E]%
+\>[65]{}\Varid{checkType}\;(\Conid{TyForall}\;\Varid{k}\;\Varid{a})\;\Varid{x}{}\<[E]%
+\\
+\>[60]{}\mathbin{<*>}{}\<[60E]%
+\>[65]{}\Varid{withReader}\;\Varid{fst}\;(\Varid{checkKind}\;\Varid{k}\;\Varid{b}){}\<[E]%
+\\
+\>[60]{}\mathbin{<*>}{}\<[60E]%
+\>[65]{}\Varid{pure}\;(\Varid{c}\equiv \Varid{normaliseTy}\;(\Conid{TyApp}\;(\Conid{TyLam}\;\Varid{a})\;\Varid{b}\;\Varid{k})){}\<[E]%
+\\
+\>[B]{}\Varid{checkType}\;\anonymous \;{}\<[27]%
+\>[27]{}\anonymous {}\<[60]%
+\>[60]{}\mathrel{=}{}\<[60E]%
+\>[65]{}\Varid{pure}\;\Varid{false}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{check}\mathbin{::}\Conid{Type}\;\Conid{Z}\to \Conid{Term}\;\Conid{Z}\;\Conid{Z}\to \Conid{Cool}{}\<[E]%
+\\
+\>[B]{}\Varid{check}\;\Varid{a}\;\Varid{x}\mathrel{=}\Varid{runReader}\;(\Varid{checkType}\;\Varid{a}\;\Varid{x})\;(\Varid{fromZ},\Varid{fromZ}){}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+
+\subsubsection{Enumerating System F\textomega}
+
+\begingroup\par\noindent\advance\leftskip\mathindent\(
+\begin{pboxed}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[B]{}\Varid{polygen}\mathbin{::}\Conid{Int}\to \Conid{Type}\;\Conid{Z}\to \Conid{IO}\;[\mskip1.5mu \Conid{Term}\;\Conid{Z}\;\Conid{Z}\mskip1.5mu]{}\<[E]%
+\\
+\>[B]{}\Varid{polygen}\;\Varid{depth}\;\Varid{a}\mathrel{=}\Varid{search}\;\Varid{depth}\;(\Varid{check}\;\Varid{a}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{main}\mathbin{::}\Conid{IO}\;(){}\<[E]%
+\\
+\>[B]{}\Varid{main}\mathrel{=}\mathbf{do}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\Varid{args}\leftarrow \Varid{getArgs}{}\<[E]%
+\\
+\>[B]{}\hsindent{3}{}\<[3]%
+\>[3]{}\mathbf{case}\;(\Varid{length}\;\Varid{args},\Varid{read}\;(\Varid{args}\mathbin{!!}\mathrm{0}),\Varid{read}\;(\Varid{args}\mathbin{!!}\mathrm{1}))\;\mathbf{of}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}(\mathrm{2},\Varid{d},\Varid{a})\to \Varid{mapM\char95 }\;\Varid{print}\rbind \Varid{polygen}\;\Varid{d}\;\Varid{a}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}(\anonymous ,\anonymous ,\anonymous )\to \Varid{putStrLn}\;\text{\ttfamily \char34 usage:~polygen~[depth]~[type]\char34}{}\<[E]%
+\ColumnHook
+\end{pboxed}
+\)\par\noindent\endgroup\resethooks
+
+%% Acknowledgments
+\begin{acks}
+\end{acks}
+
+%% Bibliography
+\bibliography{bibfile}
+
+%% Appendix
+\appendix
+\section{Appendix}
+
+Text of appendix \ldots
+
+\end{document}

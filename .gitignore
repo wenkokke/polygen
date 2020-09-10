@@ -1,3 +1,16 @@
+## Haskell Tool Stack files:
+Setup.hs
+dist-newstyle
+stack.yaml.lock
+.stack-work/
+*~
+
+## Main TeX is generated from Main LHS:
+doc/main.tex
+
+## No PDF files in repository:
+*.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
@@ -10,6 +23,7 @@
 *.fot
 *.cb
 *.cb2
+*.ptb
 .*.lb
 
 ## Intermediate documents:
