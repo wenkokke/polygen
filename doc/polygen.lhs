@@ -1,3 +1,5 @@
+\section{PolyGen}
+
 \begin{comment}
 \begin{code}
 {-# LANGUAGE ApplicativeDo        #-}
@@ -33,7 +35,9 @@ import Data.Maybe
 \end{comment}
 
 
-\subsection{Terms}
+\subsection{Syntax}
+
+\subsubsection{Variables}
 
 \begin{code}
 data Z
@@ -43,7 +47,6 @@ data Z
   deriving (Typeable, Eq, Read, Show)
 \end{code}
 \end{comment}
-
 \begin{code}
 data S n = FZ | FS n
 \end{code}
@@ -53,10 +56,14 @@ data S n = FZ | FS n
 \end{code}
 \end{comment}
 
+\medskip
+
 \begin{code}
 fromZ :: Z -> a
 fromZ n = case n of {}
 \end{code}
+
+\medskip
 
 \begin{code}
 fromS :: a -> (n -> a) -> S n -> a
@@ -92,7 +99,7 @@ instance Fin (S n) => Show (S n) where
 \end{comment}
 
 
-\subsection{Kinds}
+\subsubsection{Kinds}
 
 \begin{code}
 data  Kind
@@ -112,7 +119,7 @@ deriveEnumerable ''Kind
 \end{comment}
 
 
-\subsection{Types}
+\subsubsection{Types}
 
 \begin{code}
 data  Type ty
@@ -128,13 +135,19 @@ data  Type ty
   deriving (Typeable, Eq, Read, Show, Functor)
 \end{code}
 \end{comment}
-
 \begin{comment}
 \begin{code}
 deriveEnumerable ''Type
 \end{code}
 \end{comment}
 
+\medskip
+
+\begin{code}
+pattern TyRed a b k = TyApp (TyLam a) b k
+\end{code}
+
+\medskip
 
 \begin{code}
 newtype Normal a = Normal { unNormal :: a }
@@ -147,7 +160,6 @@ instance Show a => Show (Normal a) where
   showsPrec d a = showsPrec d (unNormal a)
 \end{code}
 \end{comment}
-
 \begin{comment}
 \begin{code}
 instance Enumerable ty => Enumerable (Normal (Type ty)) where
@@ -157,8 +169,6 @@ instance Enumerable ty => Enumerable (Normal (Type ty)) where
     ]
 \end{code}
 \end{comment}
-
-
 \begin{code}
 newtype Neutral a = Neutral { unNeutral :: a }
 \end{code}
@@ -170,8 +180,6 @@ instance Show a => Show (Neutral a) where
   showsPrec d a = showsPrec d (unNeutral a)
 \end{code}
 \end{comment}
-
-
 \begin{comment}
 \begin{code}
 instance Enumerable ty => Enumerable (Neutral (Type ty)) where
@@ -186,89 +194,7 @@ instance Enumerable ty => Enumerable (Neutral (Type ty)) where
 \end{comment}
 
 
-\subsection{Kind Checking}
-
-\begin{code}
-type KindEnv ty = ty -> Kind
-\end{code}
-
-\begin{code}
-extKindEnv :: Kind -> KindEnv ty -> KindEnv (S ty)
-extKindEnv k kindOf FZ     = k
-extKindEnv k kindOf (FS i) = kindOf i
-\end{code}
-
-\begin{code}
-checkTy :: Kind -> Type ty -> Reader (KindEnv ty) Cool
-checkTy Star TyVoid = return true
-checkTy Star (a :-> b) = do
-  aOk <- checkTy Star a
-  bOk <- checkTy Star b
-  return (aOk &&& bOk)
-checkTy Star (TyForall k a) =
-  withReader (extKindEnv k) (checkTy Star a)
-checkTy k (TyVar i) = do
-  kindOf <- ask
-  return (toCool (k == kindOf i))
-checkTy (k :=> k') (TyLam a) =
-  withReader (extKindEnv k) $
-    checkTy k' a
-checkTy k' (TyApp a b k) = do
-  aOk <- checkTy (k :=> k') a
-  bOk <- checkTy k' b
-  return (aOk &&& bOk)
-checkTy _ _ = return false
-\end{code}
-
-
-\subsection{Type Normalisation}
-
-\begin{code}
-type TySub ty ty' = ty -> Type ty'
-\end{code}
-
-\begin{code}
-extTySub :: TySub ty ty' -> TySub (S ty) (S ty')
-extTySub s FZ      = TyVar FZ
-extTySub s (FS i)  = FS <$> s i
-\end{code}
-
-\begin{code}
-appTySub :: TySub ty ty' -> Type ty -> Type ty'
-appTySub s TyVoid          = TyVoid
-appTySub s (a :-> b)       = appTySub s a :-> appTySub s b
-appTySub s (TyForall k a)  = TyForall k (appTySub (extTySub s) a)
-appTySub s (TyVar i)       = s i
-appTySub s (TyLam a)       = TyLam (appTySub (extTySub s) a)
-appTySub s (TyApp a b k)   = TyApp (appTySub s a) (appTySub s b) k
-\end{code}
-
-\begin{code}
-pattern TyRed a b k = TyApp (TyLam a) b k
-\end{code}
-
-\begin{code}
-stepTy :: Type ty -> Maybe (Type ty)
-stepTy TyVoid                 = empty
-stepTy (a :-> b)              =
-  ((:->) <$> stepTy a <*> pure b) <|>
-  ((:->) <$> pure a <*> stepTy b)
-stepTy (TyForall k a)         = TyForall <$> pure k <*> stepTy a
-stepTy (TyLam a)              = TyLam <$> stepTy a
-stepTy (TyVar i)              = empty
-stepTy (TyRed a b k)          = pure (appTySub (fromS b TyVar) a)
-stepTy (TyApp a b k)          =
-  (TyApp <$> stepTy a <*> pure b <*> pure k) <|>
-  (TyApp <$> pure a <*> stepTy b <*> pure k)
-\end{code}
-
-\begin{code}
-normTy :: Type ty -> Type ty
-normTy a = maybe a normTy (stepTy a)
-\end{code}
-
-
-\subsection{Terms}
+\subsubsection{Terms}
 
 \begin{code}
 data  Term ty tm
@@ -293,11 +219,102 @@ deriveEnumerable  ''Term
 \end{comment}
 
 
+\subsection{Kind Checking}
+
+\begin{code}
+type KindEnv ty = ty -> Kind
+\end{code}
+
+\medskip
+
+\begin{code}
+extKindEnv :: Kind -> KindEnv ty -> KindEnv (S ty)
+extKindEnv k kindOf FZ     = k
+extKindEnv k kindOf (FS i) = kindOf i
+\end{code}
+
+\medskip
+
+\begin{code}
+checkTy :: Kind -> Type ty -> Reader (KindEnv ty) Cool
+checkTy Star TyVoid = return true
+checkTy Star (a :-> b) = do
+  aOk <- checkTy Star a
+  bOk <- checkTy Star b
+  return (aOk &&& bOk)
+checkTy Star (TyForall k a) =
+  withReader (extKindEnv k) $ checkTy Star a
+checkTy k (TyVar i) = do
+  kindOf <- ask
+  return (toCool (k == kindOf i))
+checkTy (k :=> k') (TyLam a) =
+  withReader (extKindEnv k) $ checkTy k' a
+checkTy k' (TyApp a b k) = do
+  aOk <- checkTy (k :=> k') a
+  bOk <- checkTy k' b
+  return (aOk &&& bOk)
+checkTy _ _ = return false
+\end{code}
+
+
+\subsection{Type Normalisation}
+
+\begin{code}
+type TySub ty ty' = ty -> Type ty'
+\end{code}
+
+\medskip
+
+\begin{code}
+extTySub :: TySub ty ty' -> TySub (S ty) (S ty')
+extTySub s FZ      = TyVar FZ
+extTySub s (FS i)  = FS <$> s i
+\end{code}
+
+\medskip
+
+\begin{code}
+appTySub :: TySub ty ty' -> Type ty -> Type ty'
+appTySub s TyVoid          = TyVoid
+appTySub s (a :-> b)       = appTySub s a :-> appTySub s b
+appTySub s (TyForall k a)  = TyForall k (appTySub (extTySub s) a)
+appTySub s (TyVar i)       = s i
+appTySub s (TyLam a)       = TyLam (appTySub (extTySub s) a)
+appTySub s (TyApp a b k)   = TyApp (appTySub s a) (appTySub s b) k
+\end{code}
+
+\medskip
+
+\begin{code}
+stepTy :: Type ty -> Maybe (Type ty)
+stepTy TyVoid                 = empty
+stepTy (a :-> b)              =
+  ((:->) <$> stepTy a <*> pure b) <|>
+  ((:->) <$> pure a <*> stepTy b)
+stepTy (TyForall k a)         = TyForall <$> pure k <*> stepTy a
+stepTy (TyLam a)              = TyLam <$> stepTy a
+stepTy (TyVar i)              = empty
+stepTy (TyRed a b k)          = pure (appTySub (fromS b TyVar) a)
+stepTy (TyApp a b k)          =
+  (TyApp <$> stepTy a <*> pure b <*> pure k) <|>
+  (TyApp <$> pure a <*> stepTy b <*> pure k)
+\end{code}
+
+\medskip
+
+\begin{code}
+normTy :: Type ty -> Type ty
+normTy a = maybe a normTy (stepTy a)
+\end{code}
+
+
 \subsection{Type Checking}
 
 \begin{code}
 type TyEnv ty tm = tm -> Type ty
 \end{code}
+
+\medskip
 
 \begin{code}
 extTyEnv :: Type ty -> TyEnv ty tm -> TyEnv ty (S tm)
@@ -305,10 +322,14 @@ extTyEnv a typeOf  FZ      = a
 extTyEnv a typeOf  (FS n)  = typeOf n
 \end{code}
 
+\medskip
+
 \begin{code}
 raiseTyEnv :: TyEnv ty tm -> TyEnv (S ty) tm
 raiseTyEnv typeOf n = FS <$> typeOf n
 \end{code}
+
+\medskip
 
 \begin{code}
 checkTm ::  Eq ty => Type ty -> Term ty tm ->
@@ -329,9 +350,12 @@ checkTm (TyForall k a) (LAM x) =
 checkTm c (APP x (Normal a) (Normal b) k) = do
   xOk <- checkTm (TyForall k a) x
   yOk <- withReader fst (checkTy k b)
-  return (xOk &&& yOk &&& c == normTy (TyRed a b k))
+  let cOk = normTy (TyRed a b k) == c
+  return (xOk &&& yOk &&& cOk)
 checkTm _ _ = return false
 \end{code}
+
+\medskip
 
 \begin{code}
 checkClosedTm :: Type Z -> Term Z Z -> Cool
@@ -340,9 +364,9 @@ checkClosedTm a x =
 \end{code}
 
 
-\subsubsection{Enumerating System F\textomega}
+\subsection{Enumerating System F\textomega}
 
 \begin{code}
-polygen :: Int -> Type Z -> IO [Term Z Z]
-polygen depth a = search depth (checkClosedTm a)
+enumClosedTm :: Int -> Type Z -> IO [Term Z Z]
+enumClosedTm depth a = search depth (checkClosedTm a)
 \end{code}

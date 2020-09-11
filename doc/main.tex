@@ -25,17 +25,20 @@
 
 %include lhs2TeX.fmt
 %if style == poly
+%format Cool          = "\Varid{Bool}"
+%format toCool(b)     = b
 %format pattern       = "\mathbf{pattern}"
-%format extKindEnv    = "\Varid{ext}_{\Varid{KindEnv}}"
+%format extKindEnv    = "\Varid{ext}_{\Varid{KE}}"
 %format checkTy       = "\Varid{check}_{\Varid{Ty}}"
-%format extTySub      = "\Varid{ext}_{\Varid{TySub}}"
-%format appTySub      = "\Varid{app}_{\Varid{TySub}}"
+%format extTySub      = "\Varid{ext}_{\Varid{TS}}"
+%format appTySub      = "\Varid{app}_{\Varid{TS}}"
 %format stepTy        = "\Varid{step}_{\Varid{Ty}}"
 %format normTy        = "\Varid{norm}_{\Varid{Ty}}"
-%format extTyEnv      = "\Varid{ext}_{\Varid{TyEnv}}"
-%format raiseTyEnv    = "\Varid{raise}_{\Varid{TyEnv}}"
+%format extTyEnv      = "\Varid{ext}_{\Varid{TE}}"
+%format raiseTyEnv    = "\Varid{raise}_{\Varid{TE}}"
 %format checkTm       = "\Varid{check}_{\Varid{Tm}}"
 %format checkClosedTm = "\Varid{check}_{\Varid{ClosedTm}}"
+%format enumClosedTm  = "\Varid{enum}_{\Varid{ClosedTm}}"
 %format :=>           = ":\Rightarrow"
 %format :->           = ":\rightarrow"
 %format <$>           = "\mathbin{{<}{\$}{>}}"
@@ -48,7 +51,7 @@
 
 \begin{document}
 
-\title{PolyGen}
+\title{PolyGen: Efficiently Enumerating F\textomega}
 
 \author{Wen Kokke}
 \affiliation{
@@ -97,8 +100,6 @@ Text of abstract \ldots.
 %% commands, abstract environment, Computing Classification System
 %% environment and commands, and keywords command.
 \maketitle
-
-\section{PolyGen}
 
 %include PolyGen.lhs
 
