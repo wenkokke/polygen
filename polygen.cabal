@@ -23,6 +23,7 @@ library
                        , lazy-search -any
                        , mtl -any
                        , size-based -any
+                       , testing-feat -any
     default-language:    Haskell2010
 
 executable polygen

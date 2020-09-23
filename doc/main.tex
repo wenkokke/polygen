@@ -19,26 +19,32 @@
 \citestyle{acmauthoryear}  %% For author/year citations
 
 %% Preamble.
+\newcommand{\todo}[1]{\noindent\textcolor{red}{\textbf{TODO}:~#1}}
 \usepackage{comment}
 \usepackage{textgreek}
+\usepackage[all]{foreign}
 \let\Bbbk\undefined
 
+%options ghci -XTypeApplications
 %include lhs2TeX.fmt
 %if style == poly
 %format Cool          = "\Varid{Bool}"
 %format toCool(b)     = b
 %format pattern       = "\mathbf{pattern}"
+%format enumFin       = "\Varid{enum}_{\Varid{Fin}}"
+%format enumTy        = "\Varid{enum}_{\Varid{Ty}}"
+%format enumTm        = "\Varid{enum}_{\Varid{Tm}}"
+%format enumClosedTm  = "\Varid{enum}_{\Varid{ClosedTm}}"
 %format extKindEnv    = "\Varid{ext}_{\Varid{KE}}"
-%format checkTy       = "\Varid{check}_{\Varid{Ty}}"
 %format extTySub      = "\Varid{ext}_{\Varid{TS}}"
+%format extTyEnv      = "\Varid{ext}_{\Varid{TE}}"
+%format raiseTyEnv    = "\Varid{raise}_{\Varid{TE}}"
 %format appTySub      = "\Varid{app}_{\Varid{TS}}"
 %format stepTy        = "\Varid{step}_{\Varid{Ty}}"
 %format normTy        = "\Varid{norm}_{\Varid{Ty}}"
-%format extTyEnv      = "\Varid{ext}_{\Varid{TE}}"
-%format raiseTyEnv    = "\Varid{raise}_{\Varid{TE}}"
+%format checkTy       = "\Varid{check}_{\Varid{Ty}}"
 %format checkTm       = "\Varid{check}_{\Varid{Tm}}"
 %format checkClosedTm = "\Varid{check}_{\Varid{ClosedTm}}"
-%format enumClosedTm  = "\Varid{enum}_{\Varid{ClosedTm}}"
 %format :=>           = ":\Rightarrow"
 %format :->           = ":\rightarrow"
 %format <$>           = "\mathbin{{<}{\$}{>}}"

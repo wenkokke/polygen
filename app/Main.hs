@@ -30,7 +30,7 @@ options =
 
 defaultOptions :: Options
 defaultOptions = Options
-  { maxDepth = 2
+  { maxDepth = 3
   , mainType = TyVoid :-> TyVoid
   , showHelp = False
   }
@@ -55,4 +55,4 @@ main = do
     exitSuccess
 
   -- Enumerate and print terms
-  mapM_ print =<< polygen maxDepth mainType
+  mapM_ print =<< enumClosedTm maxDepth mainType
