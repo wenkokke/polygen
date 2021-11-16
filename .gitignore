@@ -5,6 +5,7 @@ stack.yaml.lock
 .stack-work/
 src/
 *~
+cabal.project.local*
 
 ## Main TeX is generated from Main LHS:
 doc/paper.tex

@@ -39,7 +39,6 @@ import Data.Bifunctor.TH
 import Data.Coolean
 import Data.Maybe
 import Data.Proxy
-import Test.Feat.Access (valuesWith)
 \end{code}
 \end{comment}
 
@@ -91,8 +90,8 @@ instance Enumerable n => Enumerable (S n) where
 \end{code}
 \begin{comment}
 \begin{code}
-enumFin :: Fin n => [n]
-enumFin = concat (snd <$> valuesWith global)
+-- enumFin :: Fin n => [n]
+-- enumFin = concat (snd <$> valuesWith global)
 \end{code}
 \end{comment}
 Enumerating all values of type |S (S (S Z))| returns \eval{enumFin @(S (S (S Z)))}.
@@ -102,7 +101,7 @@ Enumerating all values of type |S (S (S Z))| returns \eval{enumFin @(S (S (S Z))
 \subsubsection{Syntax}
 
 \begin{code}
-infixr 7 :=> :->
+infixr 7 :=>
 
 data  Kind
    =  Star
@@ -120,6 +119,8 @@ deriveEnumerable ''Kind
 \end{comment}
 
 \begin{code}
+infixr 7 :->
+
 data  Type ty
    =  TyVoid
    |  Type ty :-> Type ty
@@ -186,8 +187,8 @@ instance Show a => Show (Normal a) where
 
 \begin{comment}
 \begin{code}
-enumNeutralTy :: Enumerable ty => Int -> [Neutral (Type ty)]
-enumNeutralTy depth = concat (snd <$> take depth (valuesWith global))
+-- enumNeutralTy :: Enumerable ty => Int -> [Neutral (Type ty)]
+-- enumNeutralTy depth = concat (snd <$> take depth (valuesWith global))
 \end{code}
 \end{comment}
 
