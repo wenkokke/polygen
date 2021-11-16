@@ -2,15 +2,12 @@ resolver: nightly-2021-11-15
 compiler: ghc-9.0.1
 
 system-ghc: true
-allow-newer: true
+install-ghc: false
 
 packages:
 - .
 
 extra-deps:
 - git: https://github.com/wenkokke/sized-functors.git
-  commit: bc16e547b199b9eb61df743fdb6de8f748f826a4
-- git: https://github.com/wenkokke/testing-feat.git
-  commit: a1b32842a8cc8ab467d93a9f97f2365330a02113
-- git: https://github.com/wenkokke/lazy-search.git
-  commit: c5f1d5db02ca9e07bbb73ef73860310d201ed15f
+  commit: dc003da12320be34a919d07eb65098ad804e1a66
+- lazy-search-0.1.2.1@sha256:c942a01e4a64881f89c72eaef5e3a78eba8750759cd66996c6746a2a7cabe703,1199
