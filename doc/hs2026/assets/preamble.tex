@@ -1,0 +1,32 @@
+% Utility packages.
+\usepackage{xspace}%
+
+% Support Unicode characters.
+%% \usepackage[T1]{fontenc} %% for diacritics: the default is 'OT1'
+\usepackage[utf8]{inputenc} %% pdflatex: For UTF-8 input support.
+\usepackage{newunicodechar} %% Map Unicode characters to LaTeX commands.
+
+% Packages with various characters.
+\usepackage{textgreek}
+
+% Unicode character mapping.
+\newunicodechar{α}{{\textalpha}}
+\newunicodechar{β}{{\textbeta}}
+\newunicodechar{λ}{{\textlambda}}
+\newunicodechar{ω}{{\textomega}}
+\newunicodechar{ρ}{{\textrho}}
+\newunicodechar{τ}{{\texttau}}
+\newunicodechar{★}{\star}
+\newunicodechar{⇒}{\Rightarrow}
+
+% User-defined commands.
+\colorlet{hsann}{gray}%
+\def\hsannname{gray}%
+\def\hsannword{\textcolor{hsann}{\hsannname}\xspace}%
+\def\oftype{\mathrel{::}}
+\newcommand{\hsann}[1]{\begingroup\color{hsann}#1\endgroup}
+\newcommand{\field}[1]{\hsann\begingroup#1\oftype\endgroup}%
+\def\landseq{\rotatebox[origin=c]{-28}{!}\!\!\!\land}
+
+% Math paragraphs.
+\usepackage{mathpartir}

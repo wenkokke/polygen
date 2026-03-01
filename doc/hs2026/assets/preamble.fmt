@@ -1,0 +1,41 @@
+%format |>           = "\triangleright"
+%format :>           = "\mathbin{{:}\triangleright}"
+
+%format α            = "\alpha"
+%format α_α          = "\alpha\_\alpha"
+%format β            = "\beta"
+%format γ            = "\gamma"
+%format δ            = "\delta"
+%format ε            = "\epsilon"
+%format κ            = "\kappa"
+%format κ'           = "\kappa^{\prime}"
+%format ρ            = "\rho"
+%format ρ'           = "\rho^{\prime}"
+%format ρ''          = "\rho^{\prime\prime}"
+%format σ            = "\sigma"
+%format τ            = "\tau"
+%format τ'           = "\tau^{\prime}"
+%format τ''          = "\tau^{\prime\prime}"
+%format ω            = "\omega"
+%format ★            = "\star"
+
+%format forall       = "\mathbf{forall}"
+
+%format (MkNorm (a)) = a
+%format (MkNeut (a)) = a
+
+%format :=>          = "\mathbin{{:}\mkern-5mu\Rightarrow}"
+%format :->          = "\mathbin{{:}\mkern-5mu\rightarrow}"
+%format !&&          = "\landseq"
+%format !!&&         = "\landseq"
+%format &&&          = "\land"
+%format |||          = "\lor"
+%format <|>          = "\mathbin{\langle\mid\rangle}"
+%format <*>          = "\mathbin{\langle\star\rangle}"
+%format <$>          = "\mathbin{\langle\$\rangle}"
+%format <>           = "\mathbin{\diamond}"
+
+%format checkTy      = "\Varid{check}_{\Varid{Ty}}"
+%format checkTm      = "\Varid{check}_{\Varid{Tm}}"
+
+%subst comment a     = "{\quad\color{hsann}\text{\textemdash}\ " a "}"

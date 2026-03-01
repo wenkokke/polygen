@@ -1,0 +1,40 @@
+# Standard settings
+verbosity: "ERROR"
+strip-comments: true
+standalone: true
+
+# Pandoc filters
+filters:
+  - "filters/abstract-section/abstract-section.lua"
+  - "filters/include-files/include-files.lua"
+  - "filters/keep-haskell-code-blocks/keep-haskell-code-blocks.lua"
+  - "filters/use-bibtex/use-bibtex.lua"
+
+# Reader and writer
+reader: "markdown"
+writer: "latex"
+
+# Header includes:
+include-in-header:
+  - "preamble.fmt"
+  - "preamble.tex"
+
+# Template and data directory
+data-dir: "assets"
+resource-path: [".", "assets"]
+template: "templates/acmart.tex"
+
+# Metadata
+metadata:
+  title: "Functional Pearl: Let's List All Programs!"
+  author:
+    - name: Wen Kokke
+      institute: Well-Typed
+      city: Glasgow
+      country: UK
+      # NOTE: use @@ instead of @ for lhs2TeX
+      email: me@@wen.works
+  bibliography: "bibliography.bib"
+
+  # Request a log of included files from the include-files filter.
+  include-files-log: "build/include-files.log"

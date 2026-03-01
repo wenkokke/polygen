@@ -1,0 +1,50 @@
+cabal-version: 3.0
+name:          lets-list-all-programs
+version:       0.1.0.0
+license:       AGPL-3.0-only
+author:        Wen Kokke
+copyright:     (c) 2016 Wen Kokke
+build-type:    Simple
+
+flag threaded
+  default: False
+  manual:  True
+
+executable lets-list-all-programs
+  hs-source-dirs:     sections .
+  main-is:            lets-list-all-programs.lhs
+  other-modules:      Section1 Section2 Section3 Section4
+  ghc-options:        -pgmL markdown-unlit
+  build-tool-depends: markdown-unlit:markdown-unlit >=0.5.1 && <0.6
+  build-depends:
+    , base
+    , lazy-search  ==0.1.3.0
+    , size-based   ==0.1.3.3
+    , optparse-applicative
+    , prettyprinter
+    , text
+
+  default-extensions:
+    DeriveFunctor
+    EmptyCase
+    EmptyDataDecls
+    FlexibleContexts
+    FlexibleInstances
+    InstanceSigs
+    LambdaCase
+    PatternSynonyms
+    RecordWildCards
+    StandaloneDeriving
+    TemplateHaskell
+
+  default-language:   Haskell98
+
+  if flag(threaded)
+    ghc-options:
+      -threaded
+
+  ghc-options:
+    -rtsopts
+    -flate-specialise
+    -fspecialise-aggressively
+    -funbox-small-strict-fields
